@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/bootstrap.min.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link href="/styles.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2">
+          <div class="sidebar">
+            <div class="p-3">
+              <h3 class="text-center mb-4">
+                <a href="index.html" class="text-decoration-none text-dark">
+                  <img src="/Logo.png" alt="logo" style="width: 60px; height: auto;"> Woodcarving
+                </a>
+              </h3>
+            </div>
+            <nav class="nav flex-column accordion" id="sidebarAccordion">
+              <!-- System Menu -->
+              <div class="accordion-item border-0">
+                <h2 class="accordion-header" id="headingSystem">
+                  <button
+                    class="accordion-button bg-light text-dark fw-semibold"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseSystem"
+                    aria-expanded="true"
+                    aria-controls="collapseSystem"
+                  >
+                    <i class="fas fa-cogs me-2"></i> System
+                  </button>
+                </h2>
+                <div
+                  id="collapseSystem"
+                  class="accordion-collapse collapse show"
+                  aria-labelledby="headingSystem"
+                >
+                  <div class="accordion-body py-2">
+                    <ul class="list-unstyled ps-3 small">
+                      <li>
+                        <a class="nav-link text-dark" href="user-Index.html"
+                          ><i class="fas fa-users me-2"></i> User Profile</a
+                        >
+                      </li>
+                      <li>
+                        <a class="nav-link text-dark" href="supplier-index.html"
+                          ><i class="fas fa-truck me-2"></i> Supplier Profile</a
+                        >
+                      </li>
+                      <li>
+                        <a class="nav-link text-dark" href="customer-index.html"
+                          ><i class="fas fa-user-friends me-2"></i> Customer
+                          Profile</a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Maintain Menu -->
+              <div class="accordion-item border-0">
+                <h2 class="accordion-header" id="headingMaintain">
+                  <button
+                    class="accordion-button bg-light text-dark fw-semibold"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseMaintain"
+                    aria-expanded="true"
+                    aria-controls="collapseMaintain"
+                  >
+                    <i class="fas fa-wrench me-2"></i> Inventory
+                  </button>
+                </h2>
+                <div
+                  id="collapseMaintain"
+                  class="accordion-collapse collapse show"
+                  aria-labelledby="headingMaintain"
+                >
+                  <div class="accordion-body py-2">
+                    <ul class="list-unstyled ps-3 small">
+                      <li>
+                        <a href="item-index.html" class="nav-link text-dark"
+                          ><i class="fas fa-hammer me-2"></i> Item Profile</a
+                        >
+                      </li>
+                      <li>
+                        <a href="purchaseOrder-index.html" class="nav-link text-dark"
+                          ><i class="fas fa-shopping-cart me-2"></i> Purchase
+                          Order</a
+                        >
+                      </li>
+                      <li>
+                        <a href="grn-index.html" class="nav-link text-dark"
+                          ><i class="fas fa-receipt me-2"></i> G.R.N</a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tasks Menu -->
+              <div class="accordion-item border-0">
+                <h2 class="accordion-header" id="headingTasks">
+                  <button
+                    class="accordion-button bg-light text-dark fw-semibold"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseTasks"
+                    aria-expanded="true"
+                    aria-controls="collapseTasks"
+                  >
+                    <i class="fas fa-receipt me-2"></i> Sales
+                  </button>
+                </h2>
+                <div
+                  id="collapseTasks"
+                  class="accordion-collapse collapse show"
+                  aria-labelledby="headingTasks"
+                >
+                  <div class="accordion-body py-2">
+                    <ul class="list-unstyled ps-3 small">
+                      <li>
+                        <a href="salesOrder-index.html" class="nav-link text-dark"
+                          ><i class="fas fa-shopping-bag me-2"></i> Sales
+                          Order</a
+                        >
+                      </li>
+                      <li>
+                        <a href="invoice-index.html" class="nav-link text-dark"
+                          ><i class="fas fa-file-invoice me-2"></i> Invoice</a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </nav>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10">
+          <div class="main-content container-fluid">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h5>Add Item</h5>
+                  </div>
+                  <div class="card-body">
+                    <form>
+                      <div class="row">
+                        <div class="col-md-3 mb-3">
+                          <label for="itemName" class="form-label">Item Name</label>
+                          <input
+                                  type="text"
+                                  class="form-control"
+                                  id="itemName"
+                                  placeholder="Enter item name"
+                          />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                          <label for="itemType" class="form-label">Item Type</label>
+                          <select class="form-select" id="itemType">
+                            <option selected>Select item type</option>
+                            <option value="furniture">Furniture</option>
+                            <option value="boxes">Boxes</option>
+                            <option value="Miniature-models">Miniature models</option>
+                            <option value="figurines">Figurines / Statues</option>
+                            <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                          <label for="finishedType" class="form-label">Finished Type</label>
+                                    <select class="form-select" id="material">
+                                        <option selected>Select Finished Type</option>
+                                        <option value="Oil">Oil
+                                        </option>
+                                        <option value="Wax">Wax
+                                        </option>
+                                        <option value="Varnish">
+                                            Varnish
+                                        </option>
+                                        <option value="Painted">
+                                            Painted
+                                        </option>
+                                        <option value="Other">Other
+                                        </option>
+                                    </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                          <label for="woodType" class="form-label">Wood Type</label>
+                            <select class="form-select" id="woodType">
+                                <option selected>Select wood type</option>
+                                <option value="Teak">Teak</option>
+                                <option value="Mahogany">Mahogany</option>
+                                <option value="Rosewood">Rosewood</option>
+                                <option value="Cedar">Cedar</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-3 mb-3">
+                          <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="is_carved">
+                                    <label class="form-check-label" for="is_carved">
+                                        Carved
+                                    </label>
+                                </div>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                          <label for="costPrice" class="form-label">Cost Price(LKR)</label>
+                          <input
+                                  type="number"
+                                  class="form-control"
+                                  id="costPrice"
+                                  placeholder="Enter cost price"
+                            />
+                        </div>
+                        <div class="col-md-2 mb-3">
+                          <label for="sellingPrice" class="form-label">Selling Price(LKR)</label>
+                          <input
+                                  type="number"
+                                  class="form-control"
+                                  id="sellingPrice"
+                                  placeholder="Enter selling price"
+                            />
+                        </div>
+                        <div class="col-md-2 mb-3">
+                          <label for="stock" class="form-label">Stock</label>
+                          <input
+                                  type="number"
+                                  class="form-control"
+                                  id="stock"
+                                  placeholder="Enter stock quantity"
+                            />
+                        </div>
+                        <div class="col-md-3 mb-3 align-self-end">
+                          <button type="submit" class="btn btn-primary mt-4">
+                            Add Customer
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-lg-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h5>Item List</h5>
+                  </div>
+                  <div class="card-body">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th scope="col">Item ID</th>
+                          <th scope="col">Item Name</th>
+                          <th scope="col">Item Type</th>
+                          <th scope="col">Finished Type</th>
+                          <th scope="col">Wood Type</th>
+                          <th scope="col">Carved</th>
+                          <th scope="col">Cost Price (LKR)</th>
+                          <th scope="col">Selling Price (LKR)</th>
+                          <th scope="col">Stock</th>
+                          <th scope="col">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <!-- Sample Data Row -->
+                        <tr>
+                          <td>1</td>
+                          <td>Wooden Chair</td>
+                          <td>Furniture</td>
+                          <td>Varnish</td>
+                          <td>Teak</td>
+                          <td>Yes</td>
+                          <td>5000</td>
+                          <td>7500</td>
+                          <td>20</td>
+                          <td>
+                            <button class="btn btn-sm btn-warning me-2">
+                              Edit
+                            </button>
+                            <button class="btn btn-sm btn-danger">
+                              Delete
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/bootstrap.min.js"></script>
+  </body>
+</html>

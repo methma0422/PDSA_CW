@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/bootstrap.min.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link href="/styles.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2">
+          <div class="sidebar">
+            <div class="p-3">
+              <h3 class="text-center mb-4">
+                <a href="index.html" class="text-decoration-none text-dark">
+                  <img src="./images/Logo.png" alt="logo" style="width: 60px; height: auto;"> Woodcarving
+                </a>
+              </h3>
+            </div>
+            <nav class="nav flex-column accordion" id="sidebarAccordion">
+              <!-- System Menu -->
+              <div class="accordion-item border-0">
+                <h2 class="accordion-header" id="headingSystem">
+                  <button
+                    class="accordion-button bg-light text-dark fw-semibold"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseSystem"
+                    aria-expanded="true"
+                    aria-controls="collapseSystem"
+                  >
+                    <i class="fas fa-cogs me-2"></i> System
+                  </button>
+                </h2>
+                <div
+                  id="collapseSystem"
+                  class="accordion-collapse collapse show"
+                  aria-labelledby="headingSystem"
+                >
+                  <div class="accordion-body py-2">
+                    <ul class="list-unstyled ps-3 small">
+                      <li>
+                        <a class="nav-link text-dark" href="user-Index.html"
+                          ><i class="fas fa-users me-2"></i> User Profile</a
+                        >
+                      </li>
+                      <li>
+                        <a class="nav-link text-dark" href="supplier-index.html"
+                          ><i class="fas fa-truck me-2"></i> Supplier Profile</a
+                        >
+                      </li>
+                      <li>
+                        <a class="nav-link text-dark" href="customer-index.html"
+                          ><i class="fas fa-user-friends me-2"></i> Customer
+                          Profile</a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Maintain Menu -->
+              <div class="accordion-item border-0">
+                <h2 class="accordion-header" id="headingMaintain">
+                  <button
+                    class="accordion-button bg-light text-dark fw-semibold"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseMaintain"
+                    aria-expanded="true"
+                    aria-controls="collapseMaintain"
+                  >
+                    <i class="fas fa-wrench me-2"></i> Inventory
+                  </button>
+                </h2>
+                <div
+                  id="collapseMaintain"
+                  class="accordion-collapse collapse show"
+                  aria-labelledby="headingMaintain"
+                >
+                  <div class="accordion-body py-2">
+                    <ul class="list-unstyled ps-3 small">
+                      <li>
+                        <a href="item-index.html" class="nav-link text-dark"
+                          ><i class="fas fa-hammer me-2"></i> Item Profile</a
+                        >
+                      </li>
+                      <li>
+                        <a href="purchaseOrder-index.html" class="nav-link text-dark"
+                          ><i class="fas fa-shopping-cart me-2"></i> Purchase
+                          Order</a
+                        >
+                      </li>
+                      <li>
+                        <a href="grn-index.html" class="nav-link text-dark"
+                          ><i class="fas fa-receipt me-2"></i> G.R.N</a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tasks Menu -->
+              <div class="accordion-item border-0">
+                <h2 class="accordion-header" id="headingTasks">
+                  <button
+                    class="accordion-button bg-light text-dark fw-semibold"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseTasks"
+                    aria-expanded="true"
+                    aria-controls="collapseTasks"
+                  >
+                    <i class="fas fa-receipt me-2"></i> Sales
+                  </button>
+                </h2>
+                <div
+                  id="collapseTasks"
+                  class="accordion-collapse collapse show"
+                  aria-labelledby="headingTasks"
+                >
+                  <div class="accordion-body py-2">
+                    <ul class="list-unstyled ps-3 small">
+                      <li>
+                        <a href="salesOrder-index.html" class="nav-link text-dark"
+                          ><i class="fas fa-shopping-bag me-2"></i> Sales
+                          Order</a
+                        >
+                      </li>
+                      <li>
+                        <a href="invoice-index.html" class="nav-link text-dark"
+                          ><i class="fas fa-file-invoice me-2"></i> Invoice</a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </nav>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10">
+          <div class="main-content container-fluid">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h5>Good Receive Note</h5>
+                  </div>
+                  <div class="card-body">
+                    <form>
+                      <div class="row">
+                        <div class="col-md-2 mb-3">
+                          <label for="grnNumber" class="form-label">GRN Number</label>
+                          <input
+                                  type="text"
+                                  class="form-control"
+                                  id="grnNumber"
+                                  readonly
+                                  placeholder="Auto-generated"
+                            />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                          <label for="purchaseOrder" class="form-label"
+                            >Purchase Order</label>
+                          <select class="form-select" id="purchaseOrder">
+                              <option selected>Select Purchase Order</option>
+                              <option value="PO-00123">PO-00123</option>
+                              <option value="PO-00124">PO-00124</option>
+                          </select>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                          <label for="supName" class="form-label">Supplier Name</label>
+                          <input
+                                  type="text"
+                                  class="form-control"
+                                  id="supName"
+                                  readonly
+                                  placeholder="Auto-filled"
+                            />
+                        </div>
+                        <div class="col-md-2 mb-3">
+                          <label for="receivedDate" class="form-label">Received Date</label>
+                          <input
+                                  type="date"
+                                  class="form-control"
+                                  id="receivedDate"
+                            />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                          <label for="receivedBy" class="form-label">Received By</label>
+                          <input
+                                  type="text"
+                                  class="form-control"
+                                  id="receivedBy"
+                                  readonly
+                                  placeholder="Auto-filled(User)"
+                            />
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-3 mb-3">
+                          <label for="deliveryNote" class="form-label"
+                            >Delivery Note Number</label>
+                          <input
+                                  type="text"
+                                  class="form-control"
+                                  id="deliveryNote"
+                                  placeholder="Enter delivery note number"
+                            />
+                        </div>
+                        <div class="col-md-9 mb-3">
+                          <label for="remarks" class="form-label">Remarks</label>
+                          <textarea
+                                  class="form-control"
+                                  id="remarks"
+                                  rows="2"
+                                  placeholder="Enter any remarks"
+                            ></textarea>
+                        </div>
+                      <div class="row">
+                        <div class="card mt-4">
+                          <div class="card-header">
+                            <h6>Ordered Items</h6>
+                          </div>
+                          <div class="card-body">
+                            <!-- Order Items Table -->
+                            <table class="table table-bordered">
+                              <thead>
+                                <tr>
+                                  <th scope="col">Item</th>
+                                  <th scope="col">Ordered Qty</th>
+                                  <th scope="col">Received Qty</th>
+                                  <th scope="col">Rejected Qty</th>
+                                  <th scope="col">Accepted Qty</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <!-- Sample Item Row -->
+                                <tr>
+                                  <td>Wooden Chair</td>
+                                  <td>50</td>
+                                  <td>
+                                    <input
+                                            type="number"
+                                            class="form-control"
+                                            value="50"
+                                      />
+                                  </td>
+                                  <td>
+                                    <input
+                                            type="number"
+                                            class="form-control"
+                                            value="0"
+                                      />
+                                  </td>
+                                  <td>50</td>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 mt-3 offset-md-9">
+                                            <button type="submit" class="btn btn-primary w-100">
+                                                Save
+                                            </button>
+                                        </div>
+                          </div>
+                      </div>
+                    </form>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col-lg-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h5>GRNs</h5>
+                  </div>
+                  <div class="card-body">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th scope="col">GRN Number</th>
+                          <th scope="col">Purchase Order</th>
+                          <th scope="col">Supplier Name</th>
+                          <th scope="col">Received Date</th>
+                          <th scope="col">Received By</th>
+                          <th scope="col">Delivery Note</th>
+                          <th scope="col">Remarks</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <!-- Sample GRN Row -->
+                        <tr>
+                          <td>GRN-0001</td>
+                          <td>PO-00123</td>
+                          <td>ABC Supplies</td>
+                          <td>2024-06-15</td>
+                          <td>John Doe</td>
+                          <td>DN-5678</td>
+                          <td>All items received in good condition.</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/bootstrap.min.js"></script>
+  </body>
+</html>

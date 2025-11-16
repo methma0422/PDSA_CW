@@ -50,6 +50,10 @@ public class Product {
     @Column(nullable = false)
     private Integer stock; // Stock quantity (renamed from stockQuantity)
     
+    // Legacy DB column support (some databases still have stock_quantity NOT NULL)
+    @Column(name = "stock_quantity")
+    private Integer stockQuantityLegacy;
+    
     @Column(nullable = false)
     private Integer minStockLevel;
     
@@ -59,8 +63,8 @@ public class Product {
     @Column(nullable = false)
     private Double weight;
     
-    // Keep price for backward compatibility (maps to sellingPrice)
-    @Transient
+    // Keep price for backward compatibility (legacy DB column)
+    @Column
     private Double price;
     
     @Column(nullable = false)
@@ -73,11 +77,23 @@ public class Product {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
+        if (price == null) {
+            price = sellingPrice;
+        }
+        if (stockQuantityLegacy == null) {
+            stockQuantityLegacy = stock;
+        }
     }
     
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+        if (price == null) {
+            price = sellingPrice;
+        }
+        if (stockQuantityLegacy == null) {
+            stockQuantityLegacy = stock;
+        }
     }
 }
 

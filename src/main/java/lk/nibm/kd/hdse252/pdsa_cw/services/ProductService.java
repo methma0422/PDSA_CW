@@ -52,12 +52,16 @@ public class ProductService {
         } else if (productDTO.getPrice() != null) {
             product.setSellingPrice(productDTO.getPrice());
         }
+        // keep legacy price column in sync
+        product.setPrice(product.getSellingPrice());
         
         if (productDTO.getStock() != null) {
             product.setStock(productDTO.getStock());
         } else if (productDTO.getStockQuantity() != null) {
             product.setStock(productDTO.getStockQuantity());
         }
+        // keep legacy stock_quantity column in sync
+        product.setStockQuantityLegacy(product.getStock());
         
         product.setMinStockLevel(productDTO.getMinStockLevel());
         product.setDimensions(productDTO.getDimensions());
@@ -127,12 +131,16 @@ public class ProductService {
         } else if (productDTO.getPrice() != null) {
             existingProduct.setSellingPrice(productDTO.getPrice());
         }
+        // keep legacy price column in sync
+        existingProduct.setPrice(existingProduct.getSellingPrice());
         
         if (productDTO.getStock() != null) {
             existingProduct.setStock(productDTO.getStock());
         } else if (productDTO.getStockQuantity() != null) {
             existingProduct.setStock(productDTO.getStockQuantity());
         }
+        // keep legacy stock_quantity column in sync
+        existingProduct.setStockQuantityLegacy(existingProduct.getStock());
         
         existingProduct.setMinStockLevel(productDTO.getMinStockLevel());
         existingProduct.setDimensions(productDTO.getDimensions());

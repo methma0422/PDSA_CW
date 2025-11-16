@@ -2,6 +2,7 @@ package lk.nibm.kd.hdse252.pdsa_cw.services;
 
 import lk.nibm.kd.hdse252.pdsa_cw.dto.PurchaseOrderDTO;
 import lk.nibm.kd.hdse252.pdsa_cw.dto.PurchaseOrderItemDTO;
+import lk.nibm.kd.hdse252.pdsa_cw.dto.ProductDTO;
 import lk.nibm.kd.hdse252.pdsa_cw.entities.PurchaseOrder;
 import lk.nibm.kd.hdse252.pdsa_cw.entities.PurchaseOrderItem;
 import lk.nibm.kd.hdse252.pdsa_cw.entities.Product;
@@ -127,6 +128,8 @@ public class PurchaseOrderService {
                         itemDTO.setId(item.getId());
                         itemDTO.setPurchaseOrderId(item.getPurchaseOrder().getId());
                         itemDTO.setProductId(item.getProduct().getId());
+                        // include product details so frontend can display names
+                        itemDTO.setProduct(modelMapper.map(item.getProduct(), ProductDTO.class));
                         itemDTO.setQuantity(item.getQuantity());
                         itemDTO.setUnitPrice(item.getUnitPrice());
                         itemDTO.setTotalPrice(item.getTotalPrice());

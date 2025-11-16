@@ -1,7 +1,5 @@
-# Wood Carving Inventory Management System - Backend
+# Wood Carving Inventory Management System
 
-## Project Overview
-This is a Spring Boot REST API backend for a Wood Carving Inventory Management System developed as part of the Programming Data Structures and Algorithms (PDSA) coursework. The system demonstrates practical implementation of various data structures and algorithms in a real-world business context.
 
 ## Features
 
@@ -46,109 +44,8 @@ This is a Spring Boot REST API backend for a Wood Carving Inventory Management S
 - **Build Tool**: Maven
 - **Libraries**: Lombok, ModelMapper
 
-## Project Structure
 
-```
-src/main/java/lk/nibm/kd/hdse252/pdsa_cw/
-├── config/
-│   └── ModelMapperConfig.java          # ModelMapper bean configuration
-├── controllers/
-│   └── ProductController.java          # REST API endpoints
-├── dto/
-│   ├── ProductDTO.java                 # Product data transfer object
-│   ├── ProductSearchDTO.java           # Search criteria DTO
-│   └── RestockRequestDTO.java          # Restock request DTO
-├── entities/
-│   ├── Product.java                    # Product entity (JPA)
-│   ├── BSTNode.java                    # Binary Search Tree node
-│   ├── LinkedListNode.java             # Linked List node
-│   ├── QueueNode.java                  # Queue node
-│   └── RestockRequest.java             # Restock request entity
-├── repositories/
-│   └── ProductRepository.java          # JPA repository
-├── services/
-│   ├── DataStructureService.java       # Custom data structures management
-│   ├── ProductService.java             # Business logic for products
-│   └── ProductAnalyticsService.java    # Analytics and algorithms
-└── PdsaCwApplication.java              # Main application class
-```
 
-## Data Structures Implementation
-
-### 1. Array (ArrayList)
-- **Purpose**: Store all products in memory
-- **Operations**: Add, Remove, Update, Get All
-- **Time Complexity**: O(1) for indexed access, O(n) for search
-
-### 2. Binary Search Tree (BST)
-- **Purpose**: Fast searching and sorting by product code
-- **Operations**: Insert, Search, Delete, In-order Traversal
-- **Time Complexity**: 
-  - Search: O(log n) average, O(n) worst case
-  - Insert: O(log n) average, O(n) worst case
-  - Sort (in-order): O(n)
-
-### 3. Linked List
-- **Purpose**: Manage recently added items (FIFO with size limit)
-- **Operations**: Insert at head, Traverse
-- **Time Complexity**: O(1) for insertion, O(n) for traversal
-- **Size Limit**: 10 most recent items
-
-### 4. Queue
-- **Purpose**: Manage restock requests (FIFO)
-- **Operations**: Enqueue, Dequeue, Peek
-- **Time Complexity**: O(1) for all operations
-
-## Algorithms Implemented
-
-### 1. Binary Search Tree Operations
-- **Search Algorithm**: Recursive binary search
-- **Insert Algorithm**: Recursive insertion maintaining BST property
-- **Delete Algorithm**: Handles three cases (no children, one child, two children)
-- **Sort Algorithm**: In-order traversal
-
-### 2. Moving Average Algorithm (Stock Prediction)
-- **Purpose**: Predict future stock requirements
-- **Method**: Calculate moving average of historical consumption
-- **Time Complexity**: O(n) where n is historical records
-- **Space Complexity**: O(n) for storing history
-
-### 3. Similarity Algorithm (Product Recommendation)
-- **Purpose**: Find similar products
-- **Method**: Weighted scoring based on multiple criteria
-- **Sorting**: Quick Sort algorithm
-- **Time Complexity**: O(n log n) for sorting
-
-### 4. Quick Sort Algorithm
-- **Purpose**: Sort products by similarity score
-- **Method**: Divide and conquer with pivot selection
-- **Time Complexity**: O(n log n) average, O(n²) worst case
-
-## API Endpoints
-
-### Product Management
-- `POST /api/products` - Add new product
-- `PUT /api/products/{id}` - Update product
-- `DELETE /api/products/{id}` - Delete product
-- `GET /api/products/{id}` - Get product by ID
-- `GET /api/products` - Get all products
-
-### Search & Sort
-- `GET /api/products/search/code/{productCode}` - Search by code (BST)
-- `POST /api/products/search` - Advanced search
-- `GET /api/products/sorted` - Get sorted products (BST)
-
-### Additional Features
-- `GET /api/products/recent` - Get recent items (Linked List)
-- `GET /api/products/low-stock` - Get low stock products
-- `GET /api/products/restock-requests` - Get restock requests (Queue)
-- `POST /api/products/restock-requests/process` - Process restock request
-
-### Enhanced Functionalities
-- `GET /api/products/predict-stock/{productCode}?days=30` - Stock prediction
-- `GET /api/products/predict-stock/all?days=30` - Predict for all products
-- `POST /api/products/record-consumption/{productCode}?quantityConsumed=10` - Record consumption
-- `GET /api/products/recommend/{productCode}?maxRecommendations=5` - Get recommendations
 
 ## Setup Instructions
 

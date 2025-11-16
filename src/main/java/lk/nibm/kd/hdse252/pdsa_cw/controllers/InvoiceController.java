@@ -28,12 +28,12 @@ public class InvoiceController {
     }
     
     @PostMapping("/from-sales-order/{salesOrderId}")
-    public ResponseEntity<InvoiceDTO> createInvoiceFromSalesOrder(@PathVariable Long salesOrderId, @RequestBody InvoiceDTO invoiceDTO) {
+    public ResponseEntity<?> createInvoiceFromSalesOrder(@PathVariable Long salesOrderId, @RequestBody InvoiceDTO invoiceDTO) {
         try {
             InvoiceDTO createdInvoice = invoiceService.createInvoiceFromSalesOrder(salesOrderId, invoiceDTO);
             return new ResponseEntity<>(createdInvoice, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(java.util.Map.of("message", e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
     
@@ -48,22 +48,28 @@ public class InvoiceController {
     }
     
     @PostMapping("/{id}/payment")
-    public ResponseEntity<InvoiceDTO> recordPayment(@PathVariable Long id, @RequestParam Double paymentAmount) {
+    public ResponseEntity<?> recordPayment(@PathVariable Long id, @RequestParam Double paymentAmount, @RequestHeader(value = "X-User-Role", required = false) String role) {
+        if ("STAFF".equalsIgnoreCase(role)) {
+            return new ResponseEntity<>(java.util.Map.of("message", "Forbidden: STAFF cannot record payments"), HttpStatus.FORBIDDEN);
+        }
         try {
             InvoiceDTO updatedInvoice = invoiceService.recordPayment(id, paymentAmount);
             return new ResponseEntity<>(updatedInvoice, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(java.util.Map.of("message", e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
     
     @PostMapping("/{id}/issue")
-    public ResponseEntity<InvoiceDTO> issueInvoice(@PathVariable Long id) {
+    public ResponseEntity<?> issueInvoice(@PathVariable Long id, @RequestHeader(value = "X-User-Role", required = false) String role) {
+        if ("STAFF".equalsIgnoreCase(role)) {
+            return new ResponseEntity<>(java.util.Map.of("message", "Forbidden: STAFF cannot issue invoices"), HttpStatus.FORBIDDEN);
+        }
         try {
             InvoiceDTO issuedInvoice = invoiceService.issueInvoice(id);
             return new ResponseEntity<>(issuedInvoice, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(java.util.Map.of("message", e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
     

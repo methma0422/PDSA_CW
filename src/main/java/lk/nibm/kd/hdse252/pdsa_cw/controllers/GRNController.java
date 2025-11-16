@@ -38,12 +38,15 @@ public class GRNController {
     }
     
     @PostMapping("/{id}/complete")
-    public ResponseEntity<GRNDTO> completeGRN(@PathVariable Long id) {
+    public ResponseEntity<?> completeGRN(@PathVariable Long id, @RequestHeader(value = "X-User-Role", required = false) String role) {
+        if ("STAFF".equalsIgnoreCase(role)) {
+            return new ResponseEntity<>(java.util.Map.of("message", "Forbidden: STAFF cannot complete GRNs"), HttpStatus.FORBIDDEN);
+        }
         try {
             GRNDTO completedGRN = grnService.completeGRN(id);
             return new ResponseEntity<>(completedGRN, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(java.util.Map.of("message", e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
     

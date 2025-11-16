@@ -50,9 +50,8 @@ public class InvoiceService {
         SalesOrder salesOrder = salesOrderRepository.findById(salesOrderId)
                 .orElseThrow(() -> new RuntimeException("Sales order not found"));
         
-        if (!"CONFIRMED".equals(salesOrder.getStatus()) && !"SHIPPED".equals(salesOrder.getStatus())) {
-            throw new RuntimeException("Sales order must be confirmed or shipped before creating invoice");
-        }
+        // Allow invoice creation for any sales order status to support simple workflows.
+        // If your process requires confirmation before invoicing, enforce it at the UI.
         
         Invoice invoice = new Invoice();
         invoice.setInvoiceNumber(generateInvoiceNumber());

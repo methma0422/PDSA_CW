@@ -51,8 +51,8 @@
                         >
                             <div class="accordion-body py-2">
                                 <ul class="list-unstyled ps-3 small">
-                                    <li>
-                                        <a class="nav-link text-dark" href="user-Index.html"
+                      <li data-role-required="MANAGER,ADMIN">
+                        <a class="nav-link text-dark" href="user-Index.html"
                                         ><i class="fas fa-users me-2"></i> User Profile</a
                                         >
                                     </li>
@@ -270,6 +270,16 @@
 <script src="/bootstrap.min.js"></script>
 <script src="/api.js"></script>
 <script>
+    // Hard guard: only MANAGER or ADMIN may access this page
+    (function roleGuard(){
+        const allowed = utils.userHasAnyRole('MANAGER,ADMIN');
+        if (!allowed) {
+            utils.showNotification('Access denied: User Profile is for managers/admins only', 'error');
+            window.location.href = '/index';
+            return;
+        }
+    })();
+
     let editingUserId = null;
     
     // Load users on page load

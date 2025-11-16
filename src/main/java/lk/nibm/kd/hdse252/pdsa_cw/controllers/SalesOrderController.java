@@ -38,12 +38,15 @@ public class SalesOrderController {
     }
     
     @PostMapping("/{id}/confirm")
-    public ResponseEntity<SalesOrderDTO> confirmSalesOrder(@PathVariable Long id) {
+    public ResponseEntity<?> confirmSalesOrder(@PathVariable Long id, @RequestHeader(value = "X-User-Role", required = false) String role) {
+        if ("STAFF".equalsIgnoreCase(role)) {
+            return new ResponseEntity<>(java.util.Map.of("message", "Forbidden: STAFF cannot confirm sales orders"), HttpStatus.FORBIDDEN);
+        }
         try {
             SalesOrderDTO confirmedOrder = salesOrderService.confirmSalesOrder(id);
             return new ResponseEntity<>(confirmedOrder, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(java.util.Map.of("message", e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
     

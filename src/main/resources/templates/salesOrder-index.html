@@ -51,7 +51,7 @@
                 >
                   <div class="accordion-body py-2">
                     <ul class="list-unstyled ps-3 small">
-                      <li>
+                      <li data-role-required="MANAGER,ADMIN">
                         <a class="nav-link text-dark" href="user-Index.html"
                           ><i class="fas fa-users me-2"></i> User Profile</a
                         >
@@ -344,6 +344,8 @@
         loadProducts();
         loadSalesOrders();
         setDefaultDate();
+        const currentUser = utils.getCurrentUser();
+        const isStaff = currentUser && currentUser.role && currentUser.role.toUpperCase() === 'STAFF';
         
         // Set default date to today
         function setDefaultDate() {
@@ -577,10 +579,10 @@
                             <td>${(order.totalAmount || 0).toFixed(2)} LKR</td>
                             <td><span class="badge bg-${getStatusColor(order.status)}">${order.status || 'PENDING'}</span></td>
                             <td>
-                                ${order.status === 'PENDING' ? `<button class="btn btn-sm btn-success me-2" onclick="confirmSalesOrder(${order.id})">Confirm</button>` : ''}
+                                ${(!isStaff && order.status === 'PENDING') ? `<button class="btn btn-sm btn-success me-2" onclick="confirmSalesOrder(${order.id})">Confirm</button>` : ''}
                                 <button class="btn btn-sm btn-info me-2" onclick="viewSalesOrder(${order.id})">View</button>
-                                ${order.status === 'PENDING' ? `<button class="btn btn-sm btn-warning me-2" onclick="editSalesOrder(${order.id})">Edit</button>` : ''}
-                                ${order.status === 'PENDING' ? `<button class="btn btn-sm btn-danger" onclick="deleteSalesOrder(${order.id})">Delete</button>` : ''}
+                                ${(!isStaff && order.status === 'PENDING') ? `<button class="btn btn-sm btn-warning me-2" onclick="editSalesOrder(${order.id})">Edit</button>` : ''}
+                                ${(!isStaff && order.status === 'PENDING') ? `<button class="btn btn-sm btn-danger" onclick="deleteSalesOrder(${order.id})">Delete</button>` : ''}
                             </td>
                         </tr>
                     `).join('');
@@ -638,7 +640,9 @@
                     calculateTotals();
                     
                     document.getElementById('submitBtnText').textContent = 'Update Order';
-                    document.getElementById('confirmOrderBtn').classList.remove('d-none');
+                    if (!isStaff) {
+                      document.getElementById('confirmOrderBtn').classList.remove('d-none');
+                    }
                     document.getElementById('cancelBtn').classList.remove('d-none');
                     document.getElementById('salesOrderForm').scrollIntoView({ behavior: 'smooth' });
                 }

@@ -46,7 +46,7 @@
                 >
                   <div class="accordion-body py-2">
                     <ul class="list-unstyled ps-3 small">
-                      <li>
+                      <li data-role-required="MANAGER,ADMIN">
                         <a class="nav-link text-dark" href="user-Index.html"
                           ><i class="fas fa-users me-2"></i> User Profile</a
                         >
@@ -260,7 +260,7 @@
                               <button type="submit" class="btn btn-primary w-100" id="submitBtn">
                                 <span id="submitBtnText">Save</span>
                               </button>
-                              <button type="button" class="btn btn-success w-100 mt-2 d-none" id="completeBtn">
+                              <button type="button" class="btn btn-success w-100 mt-2 d-none" id="completeBtn" data-role-required="MANAGER,ADMIN">
                                 Complete GRN
                               </button>
                               <button type="button" class="btn btn-secondary w-100 mt-2 d-none" id="cancelBtn">
@@ -517,7 +517,7 @@
                 const result = await api.grn.getAll();
                 const tbody = document.getElementById('grnTableBody');
                 
-                if (result.success && result.data && result.data.length > 0) {
+                    if (result.success && result.data && result.data.length > 0) {
                     tbody.innerHTML = result.data.map(grn => `
                         <tr>
                             <td>${grn.grnNumber || 'N/A'}</td>
@@ -531,7 +531,7 @@
                                 <span class="badge bg-${grn.status === 'COMPLETED' ? 'success' : 'warning'}">${grn.status || 'PENDING'}</span>
                             </td>
                             <td>
-                                ${grn.status !== 'COMPLETED' ? `<button class="btn btn-sm btn-success me-2" onclick="completeGRN(${grn.id})">Complete</button>` : ''}
+                                ${grn.status !== 'COMPLETED' ? `<button class="btn btn-sm btn-success me-2" data-role-required="MANAGER,ADMIN" onclick="completeGRN(${grn.id})">Complete</button>` : ''}
                                 <button class="btn btn-sm btn-danger" onclick="deleteGRN(${grn.id})">Delete</button>
                             </td>
                         </tr>

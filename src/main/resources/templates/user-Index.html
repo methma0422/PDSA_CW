@@ -270,6 +270,11 @@
 <script src="/bootstrap.min.js"></script>
 <script src="/api.js"></script>
 <script>
+    // Check if user is logged in
+    if (!utils.isLoggedIn()) {
+        window.location.href = '/login';
+    }
+    
     // Hard guard: only MANAGER or ADMIN may access this page
     (function roleGuard(){
         const allowed = utils.userHasAnyRole('MANAGER,ADMIN');

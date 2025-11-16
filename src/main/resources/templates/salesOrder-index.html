@@ -335,6 +335,11 @@
     <script src="/bootstrap.min.js"></script>
     <script src="/api.js"></script>
     <script>
+        // Check if user is logged in
+        if (!utils.isLoggedIn()) {
+            window.location.href = '/login';
+        }
+        
         let editingOrderId = null;
         let products = [];
         let customers = [];

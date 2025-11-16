@@ -410,8 +410,8 @@
             const rejectedInput = row.querySelector('.rejected-qty-input');
             const acceptedCell = row.querySelector('.accepted-qty');
             
-            const received = parseInt(receivedInput.value) || 0;
-            const rejected = parseInt(rejectedInput.value) || 0;
+            let received = parseInt(receivedInput.value) || 0;
+            let rejected = parseInt(rejectedInput.value) || 0;
             const ordered = parseInt(receivedInput.getAttribute('data-ordered')) || 0;
             
             // Validate received quantity doesn't exceed ordered

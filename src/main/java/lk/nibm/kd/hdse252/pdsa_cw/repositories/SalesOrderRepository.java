@@ -15,3 +15,4 @@ public interface SalesOrderRepository extends JpaRepository<SalesOrder, Long> {
     boolean existsByOrderNumber(String orderNumber);
 }
 
+

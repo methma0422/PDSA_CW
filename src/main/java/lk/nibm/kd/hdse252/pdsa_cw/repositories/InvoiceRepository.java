@@ -16,3 +16,4 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
     boolean existsByInvoiceNumber(String invoiceNumber);
 }
 
+

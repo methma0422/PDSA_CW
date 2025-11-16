@@ -15,3 +15,4 @@ public interface GRNRepository extends JpaRepository<GRN, Long> {
     boolean existsByGrnNumber(String grnNumber);
 }
 
+

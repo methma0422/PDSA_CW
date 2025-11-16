@@ -165,24 +165,27 @@
                 <div class="card">
                     <div class="card-body">
                         <h3 class="card-title mb-4 text-center">Login</h3>
-                        <form method="post" action="http://localhost:8080/index">
+                        <form id="loginForm">
+                            <div id="errorMessage" class="alert alert-danger d-none" role="alert"></div>
                             <div class="row mb-3">
-                                <label for="email" class="col-md-4 col-form-label text-md-end">Email</label>
+                                <label for="username" class="col-md-4 col-form-label text-md-end">Username</label>
                                 <div class="col-md-6">
-                                    <input type="email" class="form-control" id="email" placeholder="Enter email">
+                                    <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" required>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <label for="password" class="col-md-4 col-form-label text-md-end">Password</label>
                                 <div class="col-md-6">
-                                    <input type="password" class="form-control" id="password" placeholder="Enter password">
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" required>
                                 </div> 
                             </div>
                             <div class="row mb-0 text-right">
                                 <div class="col-md-8 offset-md-4">
-                                    <button type="submit" class="btn btn-primary">Login</button>
+                                    <button type="submit" class="btn btn-primary" id="loginBtn">
+                                        <span class="spinner-border spinner-border-sm d-none" id="loginSpinner" role="status"></span>
+                                        Login
+                                    </button>
                                 </div>
-                                
                             </div>
                         </form>
                     </div>
@@ -194,5 +197,48 @@
     </div>
 
     <script src="/bootstrap.min.js"></script>
+    <script src="/api.js"></script>
+    <script>
+        // Login form handler
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            const loginBtn = document.getElementById('loginBtn');
+            const loginSpinner = document.getElementById('loginSpinner');
+            
+            // Show loading state
+            loginBtn.disabled = true;
+            loginSpinner.classList.remove('d-none');
+            errorMessage.classList.add('d-none');
+            
+            try {
+                const result = await api.user.login(username, password);
+                
+                if (result.success) {
+                    utils.showNotification('Login successful! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/index';
+                    }, 1000);
+                } else {
+                    errorMessage.textContent = result.error || 'Invalid username or password';
+                    errorMessage.classList.remove('d-none');
+                }
+            } catch (error) {
+                errorMessage.textContent = 'An error occurred. Please try again.';
+                errorMessage.classList.remove('d-none');
+            } finally {
+                loginBtn.disabled = false;
+                loginSpinner.classList.add('d-none');
+            }
+        });
+        
+        // Check if already logged in
+        if (utils.isLoggedIn()) {
+            window.location.href = '/index';
+        }
+    </script>
   </body>
 </html>

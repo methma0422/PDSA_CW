@@ -161,12 +161,160 @@
         <!-- Main Content -->
         <div class="col-md-9 col-lg-10">
             <div class="main-content">
-                <h1>Welcome to the Home Page</h1>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1>Welcome to the Home Page</h1>
+                    <div>
+                        <span id="userInfo" class="me-3"></span>
+                        <button class="btn btn-outline-danger btn-sm" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt me-1"></i>Logout
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Dashboard Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-white bg-primary">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-box me-2"></i>Total Products</h5>
+                                <h2 id="totalProducts" class="mb-0">0</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-white bg-success">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-truck me-2"></i>Total Suppliers</h5>
+                                <h2 id="totalSuppliers" class="mb-0">0</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-white bg-info">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-users me-2"></i>Total Customers</h5>
+                                <h2 id="totalCustomers" class="mb-0">0</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card text-white bg-warning">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-exclamation-triangle me-2"></i>Low Stock Items</h5>
+                                <h2 id="lowStockItems" class="mb-0">0</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Products -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Recently Added Products</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="recentProducts" class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Product Code</th>
+                                        <th>Name</th>
+                                        <th>Category</th>
+                                        <th>Stock</th>
+                                        <th>Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentProductsBody">
+                                    <tr>
+                                        <td colspan="5" class="text-center">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script src="/bootstrap.min.js"></script>
+<script src="/api.js"></script>
+<script>
+    // Check if user is logged in
+    if (!utils.isLoggedIn()) {
+        window.location.href = '/login';
+    }
+    
+    // Display user info
+    const currentUser = utils.getCurrentUser();
+    if (currentUser) {
+        document.getElementById('userInfo').innerHTML = `
+            <i class="fas fa-user me-1"></i>
+            <strong>${currentUser.fullName || currentUser.username}</strong>
+            <small class="text-muted">(${currentUser.role})</small>
+        `;
+    }
+    
+    // Logout handler
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+        if (confirm('Are you sure you want to logout?')) {
+            utils.logout();
+        }
+    });
+    
+    // Load dashboard data
+    async function loadDashboard() {
+        try {
+            // Load products count
+            const productsResult = await api.product.getAll();
+            if (productsResult.success) {
+                document.getElementById('totalProducts').textContent = productsResult.data.length || 0;
+            }
+            
+            // Load suppliers count
+            const suppliersResult = await api.supplier.getAll();
+            if (suppliersResult.success) {
+                document.getElementById('totalSuppliers').textContent = suppliersResult.data.length || 0;
+            }
+            
+            // Load customers count
+            const customersResult = await api.customer.getAll();
+            if (customersResult.success) {
+                document.getElementById('totalCustomers').textContent = customersResult.data.length || 0;
+            }
+            
+            // Load low stock items
+            const lowStockResult = await api.product.getLowStock();
+            if (lowStockResult.success) {
+                document.getElementById('lowStockItems').textContent = lowStockResult.data.length || 0;
+            }
+            
+            // Load recent products
+            const recentResult = await api.product.getRecent();
+            const tbody = document.getElementById('recentProductsBody');
+            
+            if (recentResult.success && recentResult.data && recentResult.data.length > 0) {
+                tbody.innerHTML = recentResult.data.map(product => `
+                    <tr>
+                        <td>${product.productCode}</td>
+                        <td>${product.name}</td>
+                        <td>${product.category}</td>
+                        <td><span class="badge ${product.stock <= product.minStockLevel ? 'bg-danger' : 'bg-success'}">${product.stock}</span></td>
+                        <td>${utils.formatCurrency(product.sellingPrice || product.price || 0)}</td>
+                    </tr>
+                `).join('');
+            } else {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No recent products</td></tr>';
+            }
+        } catch (error) {
+            console.error('Error loading dashboard:', error);
+            utils.showNotification('Error loading dashboard data', 'error');
+        }
+    }
+    
+    // Load dashboard on page load
+    loadDashboard();
+</script>
 </body>
 </html>

@@ -310,3 +310,4 @@ Use tools like Postman, cURL, or any REST client to test the endpoints. Ensure:
 2. Application is started on port 8080
 3. Database credentials are correctly configured in `application.properties`
 
+

@@ -1,0 +1,335 @@
+### This is a REST Client file for VS Code (REST Client Extension)
+### Install: https://marketplace.visualstudio.com/items?itemName=humao.rest-client
+
+@baseUrl = http://localhost:8080/api
+@contentType = application/json
+
+### ============================================
+### USER MANAGEMENT
+### ============================================
+
+### Create User
+POST {{baseUrl}}/users
+Content-Type: {{contentType}}
+
+{
+  "username": "admin",
+  "password": "admin123",
+  "email": "admin@woodcarving.com",
+  "fullName": "Administrator",
+  "role": "ADMIN",
+  "permissions": "CREATE,READ,UPDATE,DELETE",
+  "isActive": true
+}
+
+### Get All Users
+GET {{baseUrl}}/users
+
+### Get User by ID
+GET {{baseUrl}}/users/1
+
+### ============================================
+### SUPPLIER MANAGEMENT
+### ============================================
+
+### Create Supplier
+POST {{baseUrl}}/suppliers
+Content-Type: {{contentType}}
+
+{
+  "supplierCode": "SUP001",
+  "name": "Wood Suppliers Ltd",
+  "contactPerson": "John Doe",
+  "email": "contact@woodsuppliers.com",
+  "phone": "+94 11 2345678",
+  "address": "123 Main Street",
+  "city": "Colombo",
+  "country": "Sri Lanka",
+  "status": "ACTIVE"
+}
+
+### Get All Suppliers
+GET {{baseUrl}}/suppliers
+
+### Get Supplier by ID
+GET {{baseUrl}}/suppliers/1
+
+### ============================================
+### CUSTOMER MANAGEMENT
+### ============================================
+
+### Create Customer
+POST {{baseUrl}}/customers
+Content-Type: {{contentType}}
+
+{
+  "customerCode": "CUST001",
+  "name": "ABC Furniture Store",
+  "email": "contact@abcfurniture.com",
+  "phone": "+94 11 8765432",
+  "address": "456 Market Road",
+  "city": "Colombo",
+  "country": "Sri Lanka",
+  "customerType": "BUSINESS",
+  "status": "ACTIVE"
+}
+
+### Get All Customers
+GET {{baseUrl}}/customers
+
+### Get Customer by ID
+GET {{baseUrl}}/customers/1
+
+### ============================================
+### PRODUCT MANAGEMENT
+### ============================================
+
+### Create Product
+POST {{baseUrl}}/products
+Content-Type: {{contentType}}
+
+{
+  "productCode": "WC001",
+  "name": "Hand Carved Buddha Statue",
+  "description": "Beautiful hand-carved wooden Buddha statue",
+  "category": "Statues",
+  "itemType": "Statue",
+  "woodType": "Teak",
+  "finishedType": "Polished",
+  "isCarved": true,
+  "cost": 10000.00,
+  "sellingPrice": 15000.00,
+  "stock": 25,
+  "minStockLevel": 10,
+  "dimensions": "12x8x20 inches",
+  "weight": 2.5
+}
+
+### Create Another Product
+POST {{baseUrl}}/products
+Content-Type: {{contentType}}
+
+{
+  "productCode": "WC002",
+  "name": "Carved Elephant Statue",
+  "description": "Hand-carved wooden elephant statue",
+  "category": "Statues",
+  "itemType": "Statue",
+  "woodType": "Teak",
+  "finishedType": "Varnished",
+  "isCarved": true,
+  "cost": 8000.00,
+  "sellingPrice": 12000.00,
+  "stock": 15,
+  "minStockLevel": 5,
+  "dimensions": "10x6x15 inches",
+  "weight": 1.8
+}
+
+### Get All Products
+GET {{baseUrl}}/products
+
+### Get Product by ID
+GET {{baseUrl}}/products/1
+
+### Search Product by Code (BST)
+GET {{baseUrl}}/products/search/code/WC001
+
+### Get Sorted Products (BST)
+GET {{baseUrl}}/products/sorted
+
+### Get Recent Items (Linked List)
+GET {{baseUrl}}/products/recent
+
+### Get Low Stock Products
+GET {{baseUrl}}/products/low-stock
+
+### Get Restock Requests (Queue)
+GET {{baseUrl}}/products/restock-requests
+
+### Advanced Search
+POST {{baseUrl}}/products/search
+Content-Type: {{contentType}}
+
+{
+  "searchTerm": "Buddha",
+  "category": "Statues",
+  "woodType": "Teak",
+  "minPrice": 10000.00,
+  "maxPrice": 20000.00,
+  "minStock": 5
+}
+
+### Stock Prediction
+GET {{baseUrl}}/products/predict-stock/WC001?days=30
+
+### Product Recommendations
+GET {{baseUrl}}/products/recommend/WC001?maxRecommendations=5
+
+### Record Stock Consumption
+POST {{baseUrl}}/products/record-consumption/WC001?quantityConsumed=5
+
+### ============================================
+### PURCHASE ORDER MANAGEMENT
+### ============================================
+
+### Create Purchase Order
+POST {{baseUrl}}/purchase-orders
+Content-Type: {{contentType}}
+
+{
+  "supplierId": 1,
+  "orderDate": "2025-01-17T10:00:00",
+  "expectedDeliveryDate": "2025-01-24T10:00:00",
+  "notes": "Urgent order",
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 50,
+      "unitPrice": 10000.00
+    }
+  ]
+}
+
+### Get All Purchase Orders
+GET {{baseUrl}}/purchase-orders
+
+### Get Purchase Order by ID
+GET {{baseUrl}}/purchase-orders/1
+
+### ============================================
+### GRN MANAGEMENT
+### ============================================
+
+### Create GRN
+POST {{baseUrl}}/grns
+Content-Type: {{contentType}}
+
+{
+  "purchaseOrderId": 1,
+  "receivedDate": "2025-01-17T10:00:00",
+  "notes": "All items received",
+  "items": [
+    {
+      "productId": 1,
+      "orderedQuantity": 50,
+      "receivedQuantity": 50,
+      "unitPrice": 10000.00
+    }
+  ]
+}
+
+### Get All GRNs
+GET {{baseUrl}}/grns
+
+### Get GRN by ID
+GET {{baseUrl}}/grns/1
+
+### Complete GRN (Updates Stock)
+POST {{baseUrl}}/grns/1/complete
+
+### Get GRNs by Purchase Order
+GET {{baseUrl}}/grns/purchase-order/1
+
+### ============================================
+### SALES ORDER MANAGEMENT
+### ============================================
+
+### Create Sales Order
+POST {{baseUrl}}/sales-orders
+Content-Type: {{contentType}}
+
+{
+  "customerId": 1,
+  "orderDate": "2025-01-17T10:00:00",
+  "expectedDeliveryDate": "2025-01-20T10:00:00",
+  "tax": 500.00,
+  "discount": 200.00,
+  "notes": "Customer order",
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 5,
+      "unitPrice": 15000.00
+    }
+  ]
+}
+
+### Get All Sales Orders
+GET {{baseUrl}}/sales-orders
+
+### Get Sales Order by ID
+GET {{baseUrl}}/sales-orders/1
+
+### Confirm Sales Order (Deducts Stock)
+POST {{baseUrl}}/sales-orders/1/confirm
+
+### Get Sales Orders by Customer
+GET {{baseUrl}}/sales-orders/customer/1
+
+### ============================================
+### INVOICE MANAGEMENT
+### ============================================
+
+### Create Invoice from Sales Order
+POST {{baseUrl}}/invoices/from-sales-order/1
+Content-Type: {{contentType}}
+
+{
+  "invoiceDate": "2025-01-17T10:00:00",
+  "dueDate": "2025-02-17T10:00:00",
+  "notes": "Payment terms: 30 days"
+}
+
+### Get All Invoices
+GET {{baseUrl}}/invoices
+
+### Get Invoice by ID
+GET {{baseUrl}}/invoices/1
+
+### Issue Invoice
+POST {{baseUrl}}/invoices/1/issue
+
+### Record Payment
+POST {{baseUrl}}/invoices/1/payment?paymentAmount=5000.00
+
+### Get Invoices by Customer
+GET {{baseUrl}}/invoices/customer/1
+
+### Get Invoices by Sales Order
+GET {{baseUrl}}/invoices/sales-order/1
+
+### ============================================
+### UPDATE OPERATIONS
+### ============================================
+
+### Update Product
+PUT {{baseUrl}}/products/1
+Content-Type: {{contentType}}
+
+{
+  "productCode": "WC001",
+  "name": "Hand Carved Buddha Statue - Updated",
+  "category": "Statues",
+  "itemType": "Statue",
+  "woodType": "Teak",
+  "finishedType": "Polished",
+  "isCarved": true,
+  "cost": 10000.00,
+  "sellingPrice": 16000.00,
+  "stock": 30,
+  "minStockLevel": 10,
+  "dimensions": "12x8x20 inches",
+  "weight": 2.5
+}
+
+### ============================================
+### DELETE OPERATIONS (Use with caution)
+### ============================================
+
+### Delete Product
+# DELETE {{baseUrl}}/products/1
+
+### Delete User
+# DELETE {{baseUrl}}/users/1
+

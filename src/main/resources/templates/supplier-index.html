@@ -167,72 +167,99 @@
                     <h5>Add Supplier</h5>
                   </div>
                   <div class="card-body">
-                    <form>
+                    <div id="errorMessage" class="alert alert-danger d-none" role="alert"></div>
+                    <div id="successMessage" class="alert alert-success d-none" role="alert"></div>
+                    <form id="supplierForm">
                       <div class="row">
-                        <div class="col-md-3 mb-3">
+                        <div class="col-md-2 mb-3">
+                          <label for="supplierCode" class="form-label">Supplier Code</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="supplierCode"
+                            placeholder="e.g., SUP001"
+                            required
+                          />
+                        </div>
+                        <div class="col-md-2 mb-3">
                           <label for="supName" class="form-label">Name</label>
                           <input
                             type="text"
                             class="form-control"
                             id="supName"
                             placeholder="Enter name"
+                            required
                           />
                         </div>
-                        <div class="col-md-3 mb-3">
-                          <label for="contactPerson" class="form-label"
-                            >Contact Person</label
-                          >
+                        <div class="col-md-2 mb-3">
+                          <label for="contactPerson" class="form-label">Contact Person</label>
                           <input
                             type="text"
                             class="form-control"
                             id="contactPerson"
                             placeholder="Enter contact person"
+                            required
                           />
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-md-2 mb-3">
                           <label for="phone" class="form-label">Phone</label>
                           <input
                             type="text"
                             class="form-control"
                             id="phone"
                             placeholder="Enter phone number"
+                            required
                           />
                         </div>
-                        <div class="col-md-3 mb-3">
-                          <label for="city" class="form-label">City</label>
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="city"
-                            placeholder="Enter city"
-                          />
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-md-6 mb-3">
-                          <label for="address" class="form-label"
-                            >Address</label
-                          >
-                          <input
-                            type="text"
-                            class="form-control"
-                            id="address"
-                            placeholder="Enter address"
-                          />
-                        </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-md-2 mb-3">
                           <label for="email" class="form-label">Email</label>
                           <input
                             type="email"
                             class="form-control"
                             id="email"
                             placeholder="Enter email"
+                            required
                           />
                         </div>
-                        <div class="col-md-3 mb-3 align-self-end">
-                          <button type="submit" class="btn btn-primary mt-4">
-                            Add Supplier
+                        <div class="col-md-2 mb-3 align-self-end">
+                          <button type="submit" class="btn btn-primary w-100" id="submitBtn">
+                            <span id="submitBtnText">Add Supplier</span>
                           </button>
+                          <button type="button" class="btn btn-secondary w-100 mt-2 d-none" id="cancelBtn">
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-4 mb-3">
+                          <label for="address" class="form-label">Address</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="address"
+                            placeholder="Enter address"
+                            required
+                          />
+                        </div>
+                        <div class="col-md-2 mb-3">
+                          <label for="city" class="form-label">City</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="city"
+                            placeholder="Enter city"
+                            required
+                          />
+                        </div>
+                        <div class="col-md-2 mb-3">
+                          <label for="country" class="form-label">Country</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="country"
+                            placeholder="Enter country"
+                            required
+                          />
                         </div>
                       </div>
                     </form>
@@ -261,21 +288,9 @@
                           <th scope="col">Actions</th>
                         </tr>
                       </thead>
-                      <tbody>
+                      <tbody id="supplierTableBody">
                         <tr>
-                          <td>SUP001</td>
-                          <td>Wood Supplies Co.</td>
-                          <td>John Doe</td>
-                          <td>+1 234 567 890</td>
-                          <td>New York</td>
-                          <td>123 Wood St, NY</td>
-                          <td>johndoe@email.com</td>
-                          <td>
-                            <a href="#" class="btn btn-warning btn-sm">Edit</a>
-                            <a href="#" class="btn btn-danger btn-sm">
-                              Delete
-                            </a>
-                          </td>
+                          <td colspan="8" class="text-center">Loading...</td>
                         </tr>
                       </tbody>
                     </table>
@@ -289,5 +304,151 @@
     </div>
 
     <script src="/bootstrap.min.js"></script>
+    <script src="/api.js"></script>
+    <script>
+        let editingSupplierId = null;
+        
+        // Load suppliers on page load
+        loadSuppliers();
+        
+        // Form submit handler
+        document.getElementById('supplierForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const supplierData = {
+                supplierCode: document.getElementById('supplierCode').value,
+                name: document.getElementById('supName').value,
+                contactPerson: document.getElementById('contactPerson').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                address: document.getElementById('address').value,
+                city: document.getElementById('city').value,
+                country: document.getElementById('country').value,
+                status: 'ACTIVE'
+            };
+            
+            try {
+                let result;
+                if (editingSupplierId) {
+                    result = await api.supplier.update(editingSupplierId, supplierData);
+                } else {
+                    result = await api.supplier.create(supplierData);
+                }
+                
+                if (result.success) {
+                    utils.showNotification(editingSupplierId ? 'Supplier updated successfully!' : 'Supplier created successfully!', 'success');
+                    resetForm();
+                    loadSuppliers();
+                } else {
+                    showError(result.error || 'Failed to save supplier');
+                }
+            } catch (error) {
+                showError('An error occurred. Please try again.');
+            }
+        });
+        
+        // Load all suppliers
+        async function loadSuppliers() {
+            try {
+                const result = await api.supplier.getAll();
+                const tbody = document.getElementById('supplierTableBody');
+                
+                if (result.success && result.data && result.data.length > 0) {
+                    tbody.innerHTML = result.data.map(supplier => `
+                        <tr>
+                            <td>${supplier.supplierCode}</td>
+                            <td>${supplier.name}</td>
+                            <td>${supplier.contactPerson}</td>
+                            <td>${supplier.phone}</td>
+                            <td>${supplier.city}</td>
+                            <td>${supplier.address}</td>
+                            <td>${supplier.email}</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm" onclick="editSupplier(${supplier.id})">Edit</button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteSupplier(${supplier.id})">Delete</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">No suppliers found</td></tr>';
+                }
+            } catch (error) {
+                document.getElementById('supplierTableBody').innerHTML = 
+                    '<tr><td colspan="8" class="text-center text-danger">Error loading suppliers</td></tr>';
+            }
+        }
+        
+        // Edit supplier
+        async function editSupplier(id) {
+            try {
+                const result = await api.supplier.getById(id);
+                if (result.success) {
+                    const supplier = result.data;
+                    editingSupplierId = supplier.id;
+                    document.getElementById('supplierCode').value = supplier.supplierCode || '';
+                    document.getElementById('supplierCode').readOnly = true;
+                    document.getElementById('supName').value = supplier.name || '';
+                    document.getElementById('contactPerson').value = supplier.contactPerson || '';
+                    document.getElementById('phone').value = supplier.phone || '';
+                    document.getElementById('email').value = supplier.email || '';
+                    document.getElementById('address').value = supplier.address || '';
+                    document.getElementById('city').value = supplier.city || '';
+                    document.getElementById('country').value = supplier.country || '';
+                    document.getElementById('submitBtnText').textContent = 'Update Supplier';
+                    document.getElementById('cancelBtn').classList.remove('d-none');
+                    document.getElementById('supplierForm').scrollIntoView({ behavior: 'smooth' });
+                }
+            } catch (error) {
+                showError('Error loading supplier data');
+            }
+        }
+        
+        // Delete supplier
+        async function deleteSupplier(id) {
+            if (confirm('Are you sure you want to delete this supplier?')) {
+                try {
+                    const result = await api.supplier.delete(id);
+                    if (result && result.success) {
+                        utils.showNotification('Supplier deleted successfully!', 'success');
+                        loadSuppliers();
+                    } else if (result && !result.success) {
+                        showError(result.error || 'Failed to delete supplier');
+                    } else {
+                        // If result is undefined/null, assume success (204 response)
+                        utils.showNotification('Supplier deleted successfully!', 'success');
+                        loadSuppliers();
+                    }
+                } catch (error) {
+                    showError('Error deleting supplier: ' + error.message);
+                }
+            }
+        }
+        
+        // Reset form
+        function resetForm() {
+            editingSupplierId = null;
+            document.getElementById('supplierForm').reset();
+            document.getElementById('supplierCode').readOnly = false;
+            document.getElementById('submitBtnText').textContent = 'Add Supplier';
+            document.getElementById('cancelBtn').classList.add('d-none');
+            hideMessages();
+        }
+        
+        // Cancel edit
+        document.getElementById('cancelBtn').addEventListener('click', resetForm);
+        
+        // Show/hide error messages
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('d-none');
+            document.getElementById('successMessage').classList.add('d-none');
+        }
+        
+        function hideMessages() {
+            document.getElementById('errorMessage').classList.add('d-none');
+            document.getElementById('successMessage').classList.add('d-none');
+        }
+    </script>
   </body>
 </html>

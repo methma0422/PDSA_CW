@@ -1,0 +1,54 @@
+:root {
+    --primary-color: #cbaaec;
+    --secondary-color: #2c3e50;
+}
+body {
+    font-family: "Figtree", sans-serif;
+    background: linear-gradient(135deg, #ffffff 0%, #4B0082 100%);
+    min-height: 100vh;
+}
+.sidebar {
+    background: #E5E4E2;
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+    min-height: calc(100vh - 40px);
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+/* Hide accordion arrow */
+.accordion-button::after {
+    display: none !important;
+}
+
+/* Optional: disable clicking */
+.accordion-button {
+    pointer-events: none;
+}
+.nav-link {
+    color: var(--secondary-color);
+    background: #E5E4E2;
+    padding: 12px 20px;
+    border-radius: 10px;
+    margin: 5px 10px;
+    transition: all 0.3s ease;
+}
+.nav-link:hover {
+    background: var(--primary-color);
+    color: #E5E4E2;
+    transform: translateX(5px);
+}
+.main-content {
+    padding: 20px;
+    margin: 20px;
+    background: #E5E4E2;
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    min-height: calc(100vh - 40px);
+}
+.accordion-item{
+    background: #E5E4E2;
+}

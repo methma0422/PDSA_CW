@@ -275,6 +275,14 @@
                     <h5>Supplier List</h5>
                   </div>
                   <div class="card-body">
+                    <div class="mb-3">
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="supplierSearchInput"
+                        placeholder="Search suppliers by name, code, email, phone..."
+                      />
+                    </div>
                     <table class="table table-striped">
                       <thead>
                         <tr>
@@ -453,6 +461,28 @@
         function hideMessages() {
             document.getElementById('errorMessage').classList.add('d-none');
             document.getElementById('successMessage').classList.add('d-none');
+        }
+
+        // Search functionality for suppliers
+        document.getElementById('supplierSearchInput').addEventListener('keyup', function() {
+            filterSuppliers();
+        });
+
+        function filterSuppliers() {
+            const input = document.getElementById('supplierSearchInput');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('supplierTableBody');
+            const rows = table.getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const text = row.textContent || row.innerText;
+                if (text.toLowerCase().indexOf(filter) > -1) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
         }
     </script>
   </body>

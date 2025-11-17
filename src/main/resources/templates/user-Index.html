@@ -243,6 +243,14 @@
                                 <h5>User List</h5>
                             </div>
                             <div class="card-body">
+                                <div class="mb-3">
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="userSearchInput"
+                                        placeholder="Search users by email, username, role..."
+                                    />
+                                </div>
                                 <table class="table table-striped">
                                     <thead>
                                     <tr>
@@ -420,10 +428,32 @@
         document.getElementById('successMessage').classList.add('d-none');
     }
     
-    function hideMessages() {
-        document.getElementById('errorMessage').classList.add('d-none');
-        document.getElementById('successMessage').classList.add('d-none');
-    }
-</script>
+            function hideMessages() {
+                document.getElementById('errorMessage').classList.add('d-none');
+                document.getElementById('successMessage').classList.add('d-none');
+            }
+
+            // Search functionality for users
+            document.getElementById('userSearchInput').addEventListener('keyup', function() {
+                filterUsers();
+            });
+
+            function filterUsers() {
+                const input = document.getElementById('userSearchInput');
+                const filter = input.value.toLowerCase();
+                const table = document.getElementById('userTableBody');
+                const rows = table.getElementsByTagName('tr');
+
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i];
+                    const text = row.textContent || row.innerText;
+                    if (text.toLowerCase().indexOf(filter) > -1) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            }
+        </script>
 </body>
 </html>

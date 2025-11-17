@@ -254,6 +254,46 @@
             </div>
 
             <!-- end invoice panel -->
+
+            <!-- Hidden PDF Template (for export) -->
+            <div id="pdfTemplate" style="display: none; padding: 20px; background: white; font-family: Arial, sans-serif; color: #000;">
+              <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #000; padding-bottom: 10px;">
+                <h2 style="margin: 0; color: #000;">INVOICE</h2>
+              </div>
+              <div style="margin-bottom: 20px;">
+                <div>
+                  <p style="margin: 5px 0; color: #000;"><strong>Invoice No:</strong> <span id="pdfInvNo" style="color: #000;">-</span></p>
+                  <p style="margin: 5px 0; color: #000;"><strong>Invoice Date:</strong> <span id="pdfInvDate" style="color: #000;">-</span></p>
+                  <p style="margin: 5px 0; color: #000;"><strong>Sales Order Ref:</strong> <span id="pdfSoRef" style="color: #000;">-</span></p>
+                </div>
+              </div>
+              <div style="margin-bottom: 20px; border-top: 1px solid #ddd; padding-top: 15px;">
+                <h4 style="margin-bottom: 10px; color: #000;">Bill To:</h4>
+                <p style="margin: 5px 0; color: #000;"><strong id="pdfCustName" style="color: #000;">-</strong></p>
+                <p style="margin: 5px 0; color: #000;" id="pdfCustPhone">-</p>
+                <p style="margin: 5px 0; color: #000;" id="pdfCustAddr">-</p>
+              </div>
+              <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; border: 1px solid #000;">
+                <thead>
+                  <tr style="background-color: #f0f0f0;">
+                    <th style="border: 1px solid #000; padding: 10px; text-align: left; color: #000; font-weight: bold;">Item</th>
+                    <th style="border: 1px solid #000; padding: 10px; text-align: left; color: #000; font-weight: bold;">Description</th>
+                    <th style="border: 1px solid #000; padding: 10px; text-align: right; color: #000; font-weight: bold;">Qty</th>
+                    <th style="border: 1px solid #000; padding: 10px; text-align: right; color: #000; font-weight: bold;">Unit Price</th>
+                    <th style="border: 1px solid #000; padding: 10px; text-align: right; color: #000; font-weight: bold;">Total</th>
+                  </tr>
+                </thead>
+                <tbody id="pdfItemsBody" style="color: #000;">
+                  <!-- Items will be populated here -->
+                </tbody>
+              </table>
+              <div style="text-align: right; margin-top: 20px; border-top: 2px solid #000; padding-top: 15px;">
+                <p style="margin: 5px 0; color: #000;">Subtotal: <strong id="pdfSubtotal" style="color: #000;">0.00</strong></p>
+                <p style="margin: 5px 0; color: #000;">Tax: <strong id="pdfTax" style="color: #000;">0.00</strong></p>
+                <p style="margin: 5px 0; color: #000;">Discount: <strong id="pdfDiscount" style="color: #000;">0.00</strong></p>
+                <h3 style="margin-top: 15px; color: #000;">Total: <span id="pdfTotal" style="color: #000;">0.00</span></h3>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -299,21 +339,49 @@
         const tbody = document.querySelector('#invItemsTbl tbody');
         tbody.innerHTML = '';
         let subtotal = 0;
+        
         if (so.items && so.items.length > 0) {
-          so.items.forEach(item => {
+          // Process items and fetch product details if needed
+          for (const item of so.items) {
+            let productName = '';
+            let productDescription = '';
+            
+            // Check if product data is already included
+            if (item.product && item.product.name) {
+              productName = item.product.name;
+              productDescription = item.product.description || '';
+            } else if (item.productId) {
+              // Fetch product details if not included
+              try {
+                const productRes = await api.product.getById(item.productId);
+                if (productRes.success && productRes.data) {
+                  productName = productRes.data.name || productRes.data.productCode || `Product #${item.productId}`;
+                  productDescription = productRes.data.description || '';
+                } else {
+                  productName = `Product #${item.productId}`;
+                }
+              } catch (error) {
+                console.error('Error fetching product:', error);
+                productName = `Product #${item.productId}`;
+              }
+            } else {
+              productName = 'Unknown Product';
+            }
+            
             const lineTotal = (item.quantity || 0) * (item.unitPrice || 0);
             subtotal += lineTotal;
             const tr = document.createElement('tr');
             tr.innerHTML = `
-              <td>${item.product && item.product.name ? item.product.name : ('#' + item.productId)}</td>
-              <td>${item.product && item.product.description ? item.product.description : ''}</td>
+              <td>${productName}</td>
+              <td>${productDescription}</td>
               <td>${item.quantity || 0}</td>
               <td>${(item.unitPrice || 0).toFixed(2)}</td>
               <td>${lineTotal.toFixed(2)}</td>
             `;
             tbody.appendChild(tr);
-          });
+          }
         }
+        
         const tax = so.tax || 0;
         const discount = so.discount || 0;
         const total = subtotal + tax - discount;
@@ -354,27 +422,214 @@
         utils.showNotification('Invoice completed successfully!', 'success');
       }
 
-      function exportPdf() {
-        const element = document.getElementById('invoiceCard') || document.querySelector('.main-content');
-        if (!element) {
-          utils.showNotification('Nothing to export. Load a Sales Order first.', 'error');
+      function populatePdfTemplate() {
+        // Populate PDF template with current invoice data
+        const invNoEl = document.getElementById('pdfInvNo');
+        const invDateEl = document.getElementById('pdfInvDate');
+        const soRefEl = document.getElementById('pdfSoRef');
+        const custNameEl = document.getElementById('pdfCustName');
+        const custPhoneEl = document.getElementById('pdfCustPhone');
+        const custAddrEl = document.getElementById('pdfCustAddr');
+        
+        if (invNoEl) invNoEl.textContent = document.getElementById('invNo').value || '-';
+        if (invDateEl) invDateEl.textContent = document.getElementById('invDate').value || '-';
+        if (soRefEl) soRefEl.textContent = document.getElementById('invSoRef').value || '-';
+        if (custNameEl) custNameEl.textContent = document.getElementById('invCustName').value || '-';
+        if (custPhoneEl) custPhoneEl.textContent = document.getElementById('invCustPhone').value || '-';
+        if (custAddrEl) custAddrEl.textContent = document.getElementById('invCustAddr').value || '-';
+        
+        // Populate items
+        const tbody = document.querySelector('#invItemsTbl tbody');
+        const pdfTbody = document.getElementById('pdfItemsBody');
+        if (pdfTbody) {
+          pdfTbody.innerHTML = '';
+          
+          if (tbody && tbody.children.length > 0) {
+            Array.from(tbody.children).forEach(tr => {
+              const cells = tr.querySelectorAll('td');
+              if (cells.length >= 5) {
+                const pdfTr = document.createElement('tr');
+                pdfTr.innerHTML = `
+                  <td style="border: 1px solid #000; padding: 10px; color: #000;">${cells[0].textContent || ''}</td>
+                  <td style="border: 1px solid #000; padding: 10px; color: #000;">${cells[1].textContent || ''}</td>
+                  <td style="border: 1px solid #000; padding: 10px; text-align: right; color: #000;">${cells[2].textContent || '0'}</td>
+                  <td style="border: 1px solid #000; padding: 10px; text-align: right; color: #000;">${cells[3].textContent || '0.00'}</td>
+                  <td style="border: 1px solid #000; padding: 10px; text-align: right; color: #000;">${cells[4].textContent || '0.00'}</td>
+                `;
+                pdfTbody.appendChild(pdfTr);
+              }
+            });
+          }
+        }
+        
+        // Populate totals
+        const subtotalEl = document.getElementById('pdfSubtotal');
+        const taxEl = document.getElementById('pdfTax');
+        const discountEl = document.getElementById('pdfDiscount');
+        const totalEl = document.getElementById('pdfTotal');
+        
+        if (subtotalEl) subtotalEl.textContent = document.getElementById('invSubtotal').textContent || '0.00';
+        if (taxEl) taxEl.textContent = document.getElementById('invTax').textContent || '0.00';
+        const subtotal = parseFloat(document.getElementById('invSubtotal').textContent) || 0;
+        const tax = parseFloat(document.getElementById('invTax').textContent) || 0;
+        const total = parseFloat(document.getElementById('invTotal').textContent) || 0;
+        const discount = subtotal + tax - total;
+        if (discountEl) discountEl.textContent = discount.toFixed(2);
+        if (totalEl) totalEl.textContent = document.getElementById('invTotal').textContent || '0.00';
+        
+        console.log('Template populated - Items count:', pdfTbody ? pdfTbody.children.length : 0);
+      }
+
+      async function exportPdf() {
+        // Check if invoice data is loaded
+        const invNo = document.getElementById('invNo').value;
+        const soRef = document.getElementById('invSoRef').value;
+        
+        if (!soRef) {
+          utils.showNotification('Please load a Sales Order first.', 'error');
           return;
         }
-        // Fallback if html2pdf is not available
-        if (typeof html2pdf === 'undefined') {
-          window.print();
-          return;
+
+        try {
+          // Show loading indicator
+          const exportBtn = document.getElementById('exportInvPdf');
+          const originalText = exportBtn.innerHTML;
+          exportBtn.disabled = true;
+          exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
+
+          // Populate PDF template first
+          populatePdfTemplate();
+          
+          // Get the PDF template element
+          const element = document.getElementById('pdfTemplate');
+          if (!element) {
+            throw new Error('PDF template not found');
+          }
+          
+          // Verify data is populated
+          const soRefText = document.getElementById('pdfSoRef').textContent;
+          const itemsCount = document.getElementById('pdfItemsBody').children.length;
+          console.log('PDF Export Debug - SO Ref:', soRefText, 'Items:', itemsCount);
+          
+          if (soRefText === '-' || itemsCount === 0) {
+            throw new Error('No invoice data to export. Please load a Sales Order first.');
+          }
+          
+          // Log template content for debugging
+          console.log('PDF Template content:', element.innerHTML.substring(0, 500));
+
+          // Check if html2pdf is available
+          if (typeof html2pdf === 'undefined') {
+            // Fallback to print
+            element.style.display = 'block';
+            element.style.visibility = 'visible';
+            window.print();
+            element.style.display = 'none';
+            exportBtn.disabled = false;
+            exportBtn.innerHTML = originalText;
+            return;
+          }
+
+          // Create a new container div for PDF generation
+          const pdfContainer = document.createElement('div');
+          pdfContainer.id = 'tempPdfContainer';
+          pdfContainer.style.cssText = 'position: fixed; top: 0; left: 0; width: 210mm; background: white; z-index: 99999; opacity: 0; pointer-events: none;';
+          
+          // Clone the template element
+          const clonedElement = element.cloneNode(true);
+          clonedElement.id = 'clonedPdfTemplate';
+          clonedElement.style.cssText = 'display: block; visibility: visible; position: relative; width: 100%; background: white; padding: 20px;';
+          
+          // Append cloned element to container
+          pdfContainer.appendChild(clonedElement);
+          
+          // Append container to body
+          document.body.appendChild(pdfContainer);
+          
+          // Force layout recalculation
+          void pdfContainer.offsetHeight;
+          void clonedElement.offsetHeight;
+          
+          // Wait for rendering
+          await new Promise(resolve => setTimeout(resolve, 500));
+          
+          // Verify cloned content
+          const clonedSoRef = clonedElement.querySelector('#pdfSoRef');
+          const clonedItems = clonedElement.querySelector('#pdfItemsBody');
+          console.log('Cloned element - SO Ref:', clonedSoRef ? clonedSoRef.textContent : 'NOT FOUND');
+          console.log('Cloned element - Items:', clonedItems ? clonedItems.children.length : 'NOT FOUND');
+          
+          if (!clonedSoRef || clonedSoRef.textContent === '-' || !clonedItems || clonedItems.children.length === 0) {
+            document.body.removeChild(pdfContainer);
+            throw new Error('Failed to clone invoice data. Please try loading the Sales Order again.');
+          }
+
+          // Generate PDF with better options - use cloned element
+          const invNoClean = (invNo || 'invoice').toString().replace(/\s+/g, '_');
+          const opt = {
+            margin: [10, 10, 10, 10],
+            filename: `${invNoClean}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { 
+              scale: 2,
+              useCORS: true,
+              logging: false,
+              letterRendering: true,
+              backgroundColor: '#ffffff',
+              width: clonedElement.scrollWidth,
+              height: clonedElement.scrollHeight
+            },
+            jsPDF: { 
+              unit: 'mm', 
+              format: 'a4', 
+              orientation: 'portrait' 
+            }
+          };
+
+          // Generate PDF using cloned element
+          await html2pdf().set(opt).from(clonedElement).save();
+          
+          // Wait a bit for download to start
+          await new Promise(resolve => setTimeout(resolve, 500));
+          
+          // Remove temporary container
+          if (pdfContainer.parentNode) {
+            document.body.removeChild(pdfContainer);
+          }
+
+          utils.showNotification('PDF exported successfully!', 'success');
+        } catch (error) {
+          console.error('PDF export error:', error);
+          utils.showNotification('Error generating PDF: ' + error.message, 'error');
+          
+          // Ensure template is hidden on error
+          const element = document.getElementById('pdfTemplate');
+          if (element) {
+            element.style.display = 'none';
+            element.style.visibility = 'hidden';
+          }
+        } finally {
+          // Ensure template is hidden
+          const element = document.getElementById('pdfTemplate');
+          if (element) {
+            element.style.display = 'none';
+            element.style.visibility = 'hidden';
+            element.style.position = '';
+            element.style.left = '';
+            element.style.top = '';
+            element.style.width = '';
+            element.style.height = '';
+            element.style.zIndex = '';
+            element.style.opacity = '';
+          }
+          
+          // Restore button
+          const exportBtn = document.getElementById('exportInvPdf');
+          if (exportBtn) {
+            exportBtn.disabled = false;
+            exportBtn.innerHTML = 'Export PDF';
+          }
         }
-        const invNo = (document.getElementById('invNo').value || 'invoice').toString().replace(/\s+/g, '_');
-        const opt = {
-          margin:       10,
-          filename:     `${invNo}.pdf`,
-          image:        { type: 'jpeg', quality: 0.98 },
-          html2canvas:  { scale: 2, useCORS: true },
-          jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-          pagebreak:    { mode: ['css', 'legacy'] }
-        };
-        html2pdf().set(opt).from(element).save();
       }
 
       document.getElementById('loadSoBtn').addEventListener('click', (e) => { e.preventDefault(); loadSelectedOrder(); });

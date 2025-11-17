@@ -268,11 +268,21 @@ public class ProductService {
     
     /**
      * Get recently added items from Linked List
+     * If linked list is empty, returns most recent products from database
      */
     public List<ProductDTO> getRecentItems() {
         List<Product> recentProducts = dataStructureService.getRecentItems();
+        
+        // If linked list is empty, get most recent products from database
+        if (recentProducts.isEmpty()) {
+            recentProducts = productRepository.findAll().stream()
+                    .sorted((p1, p2) -> p2.getCreatedAt().compareTo(p1.getCreatedAt()))
+                    .limit(10)
+                    .collect(Collectors.toList());
+        }
+        
         return recentProducts.stream()
-                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
     

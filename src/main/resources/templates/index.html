@@ -290,22 +290,39 @@
                 document.getElementById('lowStockItems').textContent = lowStockResult.data.length || 0;
             }
             
-            // Load recent products
-            const recentResult = await api.product.getRecent();
-            const tbody = document.getElementById('recentProductsBody');
-            
-            if (recentResult.success && recentResult.data && recentResult.data.length > 0) {
-                tbody.innerHTML = recentResult.data.map(product => `
-                    <tr>
-                        <td>${product.productCode}</td>
-                        <td>${product.name}</td>
-                        <td>${product.category}</td>
-                        <td><span class="badge ${product.stock <= product.minStockLevel ? 'bg-danger' : 'bg-success'}">${product.stock}</span></td>
-                        <td>${utils.formatCurrency(product.sellingPrice || product.price || 0)}</td>
-                    </tr>
-                `).join('');
-            } else {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No recent products</td></tr>';
+            // Load recent products from Linked List
+            try {
+                const recentResult = await api.product.getRecent();
+                console.log('Recent products API response:', recentResult);
+                const tbody = document.getElementById('recentProductsBody');
+                
+                // Handle array response (Spring returns List directly as JSON array)
+                let recentProducts = [];
+                if (recentResult && recentResult.success) {
+                    if (Array.isArray(recentResult.data)) {
+                        recentProducts = recentResult.data;
+                    } else if (recentResult.data && Array.isArray(recentResult.data.data)) {
+                        recentProducts = recentResult.data.data;
+                    }
+                }
+                
+                if (recentProducts.length > 0) {
+                    tbody.innerHTML = recentProducts.map(product => `
+                        <tr>
+                            <td>${product.productCode || 'N/A'}</td>
+                            <td>${product.name || 'N/A'}</td>
+                            <td>${product.category || 'N/A'}</td>
+                            <td><span class="badge ${(product.stock || product.stockQuantity || 0) <= (product.minStockLevel || 0) ? 'bg-danger' : 'bg-success'}">${product.stock || product.stockQuantity || 0}</span></td>
+                            <td>${utils.formatCurrency(product.sellingPrice || product.price || 0)}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No recent products. Add some products to see them here.</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error loading recent products:', error);
+                const tbody = document.getElementById('recentProductsBody');
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading recent products</td></tr>';
             }
         } catch (error) {
             console.error('Error loading dashboard:', error);
